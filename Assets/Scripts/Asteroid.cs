@@ -24,12 +24,11 @@ public class Asteroid : MonoBehaviour
 
     private void Start()
     {
-        // Assign random properties to make each asteroid feel unique
+        // Assign random properties to asteroid 
         spriteRenderer.sprite = sprites[Random.Range(0, sprites.Length)];
         transform.eulerAngles = new Vector3(0f, 0f, Random.value * 360f);
 
-        // Set the scale and mass of the asteroid based on the assigned size so
-        // the physics is more realistic
+        // Set the scale and mass of the asteroid based on the size 
         transform.localScale = Vector3.one * size;
         rb.mass = size;
 
@@ -39,8 +38,7 @@ public class Asteroid : MonoBehaviour
 
     public void SetTrajectory(Vector2 direction)
     {
-        // The asteroid only needs a force to be added once since they have no
-        // drag to make them stop moving
+        // The asteroid only needs a force to be added once 
         rb.AddForce(direction * movementSpeed);
     }
 

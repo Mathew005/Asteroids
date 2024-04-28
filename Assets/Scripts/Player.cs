@@ -109,7 +109,7 @@ public class Player : MonoBehaviour
 
     private void Shoot()
     {
-        Bullet bullet = Instantiate(bulletPrefab, transform.position + transform.up.normalized * 0.7f, transform.rotation);
+        Bullet bullet = Instantiate(bulletPrefab, transform.position + transform.up.normalized * 0.2f , transform.rotation);
         bullet.Shoot(transform.up);
     }
 
