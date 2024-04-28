@@ -8,6 +8,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Player player;
     [SerializeField] private ParticleSystem explosionEffect;
     [SerializeField] private GameObject gameOverUI;
+    [SerializeField] private GameObject startGameUI;
+    [SerializeField] private GameObject HUD;
     [SerializeField] private Text scoreText;
     [SerializeField] private Text livesText;
 
@@ -17,6 +19,9 @@ public class GameManager : MonoBehaviour
     public int Score => score;
     public int Lives => lives;
 
+    private GameObject gameUI;
+    private bool gameState = false;
+
     private void Awake()
     {
         if (Instance != null) {
@@ -25,17 +30,33 @@ public class GameManager : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(gameObject);
         }
+
     }
 
     private void Start()
     {
-        NewGame();
+        startGameUI.SetActive(true);
+        gameOverUI.SetActive(false);
+        HUD.SetActive(false);
+        player.gameObject.SetActive(false);
     }
 
     private void Update()
     {
-        if (lives <= 0 && Input.GetKeyDown(KeyCode.Return)) {
+        if (!gameState && (Input.GetKeyDown(KeyCode.Return) || Input.GetMouseButtonDown(0)))
+        {
+            gameState = true;
+            startGameUI.SetActive(false);
+            HUD.SetActive(true);
             NewGame();
+        }
+        if (lives <= 0 && (Input.GetKeyDown(KeyCode.Return) || Input.GetMouseButtonDown(0))) {
+            NewGame();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Application.Quit();
         }
     }
 
