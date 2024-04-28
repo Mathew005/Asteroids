@@ -4,9 +4,11 @@
 public class Player : MonoBehaviour
 {
     private Rigidbody2D rb;
+    public AudioSource shootAudio;
 
     [SerializeField]
     private Bullet bulletPrefab;
+
 
     public float thrustSpeed = 1f;
     private bool thrusting;
@@ -111,6 +113,7 @@ public class Player : MonoBehaviour
     {
         Bullet bullet = Instantiate(bulletPrefab, transform.position + transform.up.normalized * 0.2f , transform.rotation);
         bullet.Shoot(transform.up);
+        shootAudio.Play();
     }
 
     private void TurnOffCollisions()

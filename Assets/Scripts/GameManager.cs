@@ -13,6 +13,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Text scoreText;
     [SerializeField] private Text livesText;
 
+    public AudioSource shipExplosionAudio;
+    public AudioSource rockExplosionAudio;
+
     private int score;
     private int lives;
 
@@ -100,15 +103,22 @@ public class GameManager : MonoBehaviour
 
         if (asteroid.size < 0.7f) {
             SetScore(score + 100); // small asteroid
+            rockExplosionAudio.volume = 0.25f;
+            rockExplosionAudio.Play();
         } else if (asteroid.size < 1.4f) {
             SetScore(score + 50); // medium asteroid
+            rockExplosionAudio.volume = 0.50f;
+            rockExplosionAudio.Play();
         } else {
             SetScore(score + 25); // large asteroid
+            rockExplosionAudio.volume = 1.0f;
+            rockExplosionAudio.Play();
         }
     }
 
     public void OnPlayerDeath(Player player)
     {
+        shipExplosionAudio.Play();
         player.gameObject.SetActive(false);
 
         explosionEffect.transform.position = player.transform.position;
