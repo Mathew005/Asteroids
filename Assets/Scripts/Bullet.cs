@@ -5,7 +5,7 @@ public class Bullet : MonoBehaviour
 {
     private Rigidbody2D rb;
 
-    public float speed = 500f;
+    public float speed = 100f;
     public float maxLifetime = 5.0f;
 
     private void Awake()
@@ -28,5 +28,12 @@ public class Bullet : MonoBehaviour
         // Destroy the bullet as soon as it collides with anything
         Destroy(gameObject);
     }
+
+
+    public void SpeedUp()
+    {
+        speed = speed * 1.10f;
+    }
+
 
 }

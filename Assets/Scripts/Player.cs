@@ -5,14 +5,20 @@ public class Player : MonoBehaviour
 {
     private Rigidbody2D rb;
     public AudioSource shootAudio;
+    public float fireRate = 0.5f;
+    private float nextFire;
 
     [SerializeField]
-    private Bullet bulletPrefab;
+    internal Bullet bulletPrefab;
+
+
+    [SerializeField] private GameManager gameManager;
 
 
     public float thrustSpeed = 1f;
     private bool thrusting;
     private bool anti_thrusting;
+    internal bool shooting = false;
     public bool IsThrusting => thrusting;
 
     public float rotationSpeed = 0.1f;
@@ -57,6 +63,12 @@ public class Player : MonoBehaviour
         thrusting = Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow);
 
         anti_thrusting = Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow);
+
+        if((Input.GetKey(KeyCode.Space) || Input.GetMouseButton(0) )&& Time.time > nextFire)
+        {
+            nextFire = Time.time + fireRate;
+            Shoot();
+        }
         
         if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) {
             turnDirection = 1f;
@@ -64,10 +76,6 @@ public class Player : MonoBehaviour
             turnDirection = -1f;
         } else {
             turnDirection = 0f;
-        }
-
-        if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0)) {
-            Shoot();
         }
     }
 
@@ -111,9 +119,14 @@ public class Player : MonoBehaviour
 
     private void Shoot()
     {
-        Bullet bullet = Instantiate(bulletPrefab, transform.position + transform.up.normalized * 0.2f , transform.rotation);
+        if (gameManager.gamePause)
+        {
+            return;
+        }
+        Bullet bullet = Instantiate(bulletPrefab, transform.position + transform.up.normalized * 0.2f, transform.rotation);
         bullet.Shoot(transform.up);
         shootAudio.Play();
+        
     }
 
     private void TurnOffCollisions()
@@ -135,6 +148,18 @@ public class Player : MonoBehaviour
 
             GameManager.Instance.OnPlayerDeath(this);
         }
+    }
+
+    public void FireRateUp()
+    {
+        if(gameManager.Score >= 100) { 
+            fireRate = fireRate * 0.9f;
+        }
+    }
+
+    public void SpeedUp()
+    {
+        thrustSpeed = thrustSpeed * 1.10f;
     }
 
 }

@@ -10,11 +10,15 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject gameOverUI;
     [SerializeField] private GameObject startGameUI;
     [SerializeField] private GameObject HUD;
+    [SerializeField] private GameObject tabHUD;
     [SerializeField] private Text scoreText;
     [SerializeField] private Text livesText;
 
     public AudioSource shipExplosionAudio;
     public AudioSource rockExplosionAudio;
+    public AudioSource buyAudio;
+    public AudioSource lifeAudio;
+    public AudioSource errorAudio;
 
     private int score;
     private int lives;
@@ -24,6 +28,7 @@ public class GameManager : MonoBehaviour
 
     private GameObject gameUI;
     private bool gameState = false;
+    public bool gamePause = false;
 
     private void Awake()
     {
@@ -41,11 +46,17 @@ public class GameManager : MonoBehaviour
         startGameUI.SetActive(true);
         gameOverUI.SetActive(false);
         HUD.SetActive(false);
+        tabHUD.SetActive(false);
         player.gameObject.SetActive(false);
     }
 
     private void Update()
     {
+        if (gameState && Input.GetKeyDown(KeyCode.Tab) && lives > 0 )
+        {
+            showTab();
+        }
+
         if (!gameState && (Input.GetKeyDown(KeyCode.Return) || Input.GetMouseButtonDown(0)))
         {
             gameState = true;
@@ -75,6 +86,9 @@ public class GameManager : MonoBehaviour
 
         SetScore(0);
         SetLives(3);
+        player.fireRate = 0.5f;
+        player.thrustSpeed = 1f;
+        player.bulletPrefab.speed = 100f;
         Respawn();
     }
 
@@ -131,6 +145,48 @@ public class GameManager : MonoBehaviour
         } else {
             Invoke(nameof(Respawn), player.respawnDelay);
         }
+    }
+
+    private void showTab()
+    {
+        if (gamePause)
+        {
+            Time.timeScale = 1.0f;
+            gamePause = false;
+            tabHUD.SetActive(false);
+        }
+        else { 
+            Time.timeScale = 0.3f; 
+            gamePause = true;
+            tabHUD.SetActive(true);
+        }
+    }
+
+    public void Cost()
+    {
+        if (this.score >= 100)
+        {
+            SetScore(score - 100);
+            buyAudio.Play();
+        }
+        else
+        {
+            errorAudio.Play();
+        }
+    }
+    public void Cost2()
+    {
+        if (this.score >= 1000)
+        {
+            SetScore(score - 1000);
+            SetLives(this.lives + 1);
+            lifeAudio.Play();
+        }
+        else
+        {
+            errorAudio.Play();
+        }
+
     }
 
 }
